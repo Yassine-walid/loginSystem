@@ -1,10 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %} Sign In {% endblock%}
+{% block content %}
+    <h3>SignIn</h3>
+    <form action="/signin" method="post">
+    {% csrf_token %}
+        <label>Username</label>
+        <input type="text" id="username" name="username" placeholder="Username" Required>
+        <br>
+        <label>Password</label>
+        <input type="password" id="pass1" name="pass1" placeholder="Password" Required>
+        <br>
+        <button type="submit">Sign In</button>
+    </form>
+{% endblock %}
