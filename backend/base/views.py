@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
+import re
 
 # Create your views here.
 
@@ -19,6 +20,49 @@ def signup(request):
         email = request.POST["email"]
         pass1 = request.POST["pass1"]
         pass2 = request.POST["pass2"]
+
+        #Chek Username if exist
+        if User.objects.filter(username=username):
+            messages.error(request,"This username is already taken please try again")
+            return redirect("home")
+
+
+        #Check Email if exist
+
+        if User.objects.filter(email=email):
+            messages.error(request,"This email already used in another account. please try again")
+            return redirect("home")
+
+
+        #Check Username Length
+
+        if len(username) < 8 and len(username) > 16 :
+            messages.error(request, "The lenght of the username between 8 and 16. please try again")
+            return redirect("home")
+
+        #Check Password
+
+        if pass1 != pass2:
+            messages.error(request, "Please recheck the password")
+        #Check Password Regex
+
+        reg = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{8,16}$"
+        match_re = re.compile(reg)
+        res = re.search(match_re,pass1)
+
+        if  res:
+            pass
+        else:
+            messages.error(request, "Please enter password should be One Capital Letter  Special Character One Number  Length Should be 8-16: ")
+            return redirect("home")
+
+        #Chek Username isnt all number
+
+        if not username.isalnum():
+            messages.error(request,"Username must be Alphanumeric!")
+            return redirect("home")
+
+
 
         #Save User data
         myuser = User.objects.create_user(username,email,pass1)
